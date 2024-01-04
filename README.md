@@ -1,2 +1,2 @@
 # fuzzing-android
-fuzzer based on spiderlabs fuzzing algorithm
+fuzzer based on trustwave fuzzing algorithm
