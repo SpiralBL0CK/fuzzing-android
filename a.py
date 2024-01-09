@@ -9,6 +9,7 @@ import marshal
 import time
 import re
 
+#>adb -s 10.14.14.208:5555 shell
 FUZZ_WAIT = 5
 DEBUG = True
 HAS_CRASHED = 0
@@ -16,9 +17,9 @@ ADB_BINARY = "..\\adb.exe"
 CRASH_IDENTIFIERS = ['FATAL EXCEPTION','FATAL EXCEPTION IN','FATAL EXCEPTION IN SYSTEM PROCESS: main','backtrace','SI_QUEUE','SIGSEGV', 'SIGFPE', 'SIGILL','SIGABRT','OOM','OutOfMemoryError','java.lang.OutOfMemoryError']
 NOT_CRASHED = 0
 CRASHED = 1
-FUZZ_IP = #put ip of decive
+FUZZ_IP = "10.14.14.204"
 # Device Settings
-DEVICE_ID = #put device id here
+DEVICE_ID = "R58MA2EYZYN"
 
 SERVER_IP = "0.0.0.0"
 SERVER_PORT = 1337
@@ -166,7 +167,8 @@ def check_if_crash(process):
         #subprocess.call(logcat_args)
         time.sleep(wait)
         logcat.kill()
-        logcat2 = [line.strip().decode('utf-8') for line in iter(logcat.stdout.readline, b'')]
+        logcat2 = [line.strip().decode('utf-8',errors='backslashreplace').replace("\\","").rstrip().lstrip()  for line in iter(logcat.stdout.readline, b'')]
+        #print(logcat2)
         #print("+++++++++++++++++++logcat2+++++++++++++++++++++")
         #print(logcat2)
         #print("+++++++++++++++++++logcat2+++++++++++++++++++++")
@@ -176,7 +178,7 @@ def check_if_crash(process):
             logcat_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         time.sleep(10)
         logcat_chrash_pozitiv.kill()
-        logcat_chrash_pozitiv_result = [line.strip().decode('utf-8') for line in iter(logcat_chrash_pozitiv.stdout.readline, b'')]
+        logcat_chrash_pozitiv_result = [line.strip().decode('utf-8',errors='backslashreplace').replace("\\","").rstrip().lstrip() for line in iter(logcat_chrash_pozitiv.stdout.readline, b'')]
         if(len(logcat_chrash_pozitiv_result) > 0):
             print("+++++++++++++++++++logcat_chrash_pozitiv_result+++++++++++++++++++++")
             print(logcat_chrash_pozitiv_result)
@@ -212,8 +214,11 @@ def check_if_crash(process):
                 clear_log = subprocess.Popen(
                 clear_log_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 clear_log.wait()
-   
                 break
+        #clear_log_args = [adb, 'logcat', '-c']
+        #clear_log = subprocess.Popen(
+        #clear_log_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        #clear_log.wait()
         
     #                    return
         # print("muje rito")
@@ -253,7 +258,7 @@ def Fuzz():
     adb_connection_int()
     servicii = list_services()
     servicii = servicii[4:len(servicii)-1]
-    n=len(servicii)
+    n=len(servicii)-30
     #print(servicii)
     #print(len(servicii))
 
