@@ -14,7 +14,7 @@ FUZZ_WAIT = 5
 DEBUG = True
 HAS_CRASHED = 0
 ADB_BINARY = "..\\adb.exe"
-CRASH_IDENTIFIERS = ['FATAL EXCEPTION','FATAL EXCEPTION IN','FATAL EXCEPTION IN SYSTEM PROCESS: main','backtrace','SI_QUEUE','SIGSEGV', 'SIGFPE', 'SIGILL','SIGABRT','OOM','OutOfMemoryError','java.lang.OutOfMemoryError']
+CRASH_IDENTIFIERS = ['FATAL EXCEPTION','FATAL EXCEPTION IN','FATAL EXCEPTION IN SYSTEM PROCESS: main','backtrace','SI_QUEUE','SIGSEGV', 'SIGFPE', 'SIGILL','SIGABRT']
 NOT_CRASHED = 0
 CRASHED = 1
 FUZZ_IP = "10.14.14.204"
@@ -197,13 +197,13 @@ def check_if_crash(process):
             if id_string in logcat_chrash_pozitiv_result:
                 FLAG = True
             if(FLAG):
-                f= open("crash_rez.txt","a")
+                f= open("crash_third_run_third_lot_of_crashes_rez.txt","a")
                 HAS_CRASHED = 1
                 print("[VALID CRASH] - ")
                 print(process[i].split())
                 f.write(str(process[i]))
                 f.write("\n")
-                f.write("canonical form"+str(args))
+                #f.write("canonical form"+str(args))
                 f.write("\n")
                 print("AM IESIT NEXT THING ")
                 f.close()
@@ -246,7 +246,7 @@ def f(id, arg1, arg2,arg3):
 
 #main
 #pui cate threaduri vrei
-n_threads = 10
+n_threads = 20
 for i in range(n_threads):
     q.append(i)
     threads.append(None)
@@ -258,16 +258,72 @@ def Fuzz():
     adb_connection_int()
     servicii = list_services()
     servicii = servicii[4:len(servicii)-1]
-    n=len(servicii)-30
-    #print(servicii)
-    #print(len(servicii))
+    new_services = []
+    one = servicii[191:197]
+    for i in range(0,len(one)):
+        new_services.append(one[i])
 
+    two = servicii[181:191]
+    for i in range(0,len(two)):
+        new_services.append(two[i])
+
+    three = servicii[161:171]
+    for i in range(0,len(three)):
+        new_services.append(three[i])
+
+    four =  servicii[151:161]
+    for i in range(0,len(four)):
+        new_services.append(four[i])
+
+
+    five = servicii[82:92]
+    for i in range(0,len(five)):
+        new_services.append(five[i])
+
+
+    five = servicii[141:151]
+    for i in range(0,len(five)):
+        new_services.append(five[i])
+
+    sever = servicii[112:122]
+    for i in range(0,len(sever)):
+        new_services.append(sever[i])
+
+    six = servicii[130:140]
+    for i in range(0,len(six)):
+        new_services.append(six[i])
+
+    sever = servicii[160:170]
+    for i in range(0,len(sever)):
+        new_services.append(sever[i])
+
+    sever = servicii[71]
+    new_services.append(sever)
+
+    sever = servicii[42:44]
+    for i in range(0,len(sever)):
+        new_services.append(sever[i])
+
+    sever = servicii[50]
+    new_services.append(sever)
+
+    sever = servicii[21:29]
+    for i in range(0,len(sever)):
+        new_services.append(sever[i])
+
+
+    n=len(new_services)-40
+    #new_services =new_services[56:76]
+    #print(n)
+    #print(new_services)
+    #print(len(servicii))
+    
     while n>0:
     #print(q)
         if q and HAS_CRASHED == 0: #adica daca nu e goala
             id = q.pop()
             s = 5
-            a = threading.Thread(target=f, args=(id, s, n, servicii[n-1]))
+            a = threading.Thread(target=f, args=(id, s, n, new_services[n-1]))
             a.start()
             #print(id)
             threads[id] = a
@@ -275,7 +331,7 @@ def Fuzz():
     for i in range(0,(n_threads)):
         if threads[id] is not None:
             threads[id].join()#asteptam sa termine executia
-
+    
 
 if __name__ == '__main__':
     Fuzz()
